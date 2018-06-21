@@ -1,147 +1,146 @@
-import random
+def makelist():
+    filename = 'c:/work/fruits.txt'
+    inputfile = open(filename)
+    text = inputfile.read()
+    inputfile.close()
+    lst = text.split("\n")
+    return lst
 
-def displayHangMan(number):
-    if number==0:
-        print(format('+---+','^20'))
-        i=0
-        while i<5:
-            print(format('|','>12'))
-            i+=1
-        print(format('-'*11,'>14'))
-    elif number==1:
-        print(format('+---+','^20'))
-        print(format('|   |','>12'))
-        i=0
-        while i<4:
-            print(format('|','>12'))
-            i+=1
-        print(format('-'*11,'>14'))
-    elif number==2:
-        print(format('+---+','^20'))
-        print(format('|   |','>12'))
-        print(format('O   |','>12'))
-        i=0
-        while i<3:
-            print(format('|','>12'))
-            i+=1
-        print(format('-'*11,'>14'))
-    elif number==3:
-        print(format('+---+','^20'))
-        print(format('|   |','>12'))
-        print(format('O   |','>12'))
-        print(format('/    |','>12'))
-        i=0
-        while i<2:
-            print(format('|','>12'))
-            i+=1
-        print(format('-'*11,'>14'))
-    elif number==4:
-        print(format('+---+','^20'))
-        print(format('|   |','>12'))
-        print(format('O   |','>12'))
-        print(format('/|   |','>12'))
-        i=0
-        while i<2:
-            print(format('|','>12'))
-            i+=1
-        print(format('-'*11,'>14'))
-    elif number==5:
-        print(format('+---+','^20'))
-        print(format('|   |','>12'))
-        print(format('O   |','>12'))
-        print(format('/|\\  |','>12'))
-        i=0
-        while i<2:
-            print(format('|','>12'))
-            i+=1
-        print(format('-'*11,'>14'))
-    elif number==6:
-        print(format('+---+','^20'))
-        print(format('|   |','>12'))
-        print(format('O   |','>12'))
-        print(format('/|\\  |','>12'))
-        print(format('/    |','>12'))
-        i=0
-        while i<1:
-            print(format('|','>12'))
-            i+=1
-        print(format('-'*11,'>14'))
-    elif number==7:
-        print(format('+---+','^20'))
-        print(format('|   |','>12'))
-        print(format('O   |','>12'))
-        print(format('/|\\  |','>12'))
-        print(format('/ \\  |','>12'))
-        i=0
-        while i<1:
-            print(format('|','>12'))
-            i+=1
-        print(format('-'*11,'>14'))
-
+def displayHangMan(count):
+    text = ["""
+           +---+
+               |
+               |
+               |
+               |
+               |
+        -----------""",
+        """
+           +---+
+           |   |
+               |
+               |
+               |
+               |
+       -----------""",
+        """
+           +---+
+           |   |
+           O   |
+               |
+               |
+               |
+       -----------""",
+        """
+           +---+
+           |   |
+           O   |
+          /    |
+               |
+               |
+       -----------""",
+        """
+           +---+
+           |   |
+           O   |
+          /|   |
+               |
+               |
+       -----------""",
+        """
+           +---+
+           |   |
+           O   |
+          /|\\  |
+               |
+               |
+       -----------""",
+        """
+           +---+
+           |   |
+           O   |
+          /|\\  |
+          /    |
+               |
+       -----------""",
+        """
+           +---+
+           |   |
+           O   |
+          /|\\  |
+          / \\  |
+               |
+       -----------"""]
+    
+    print(text[count])
             
+
 def randomword(lst):
-    number=random.randint(0,len(lst))
-    word=lst[number]
+    import random
+    number = random.randint(0,len(lst)-1)
+    word = lst[number].lower()
     return word
 
-def gamestart(lst):
-    Deathcount=0
-    displayHangMan(Deathcount)
-    Answer=randomword(lst)
-    wordlength=len(Answer)
-    Disp='_'
-    guessword='' 
-    startword=Answer[random.randint(0,wordlength-1)].lower()
-    i=0
-    while i<wordlength:
-        if Answer[i].lower()==startword:
-            guessword=guessword+startword
+def guessword(word):
+    import random
+    hiddenword = word
+    randalpha = word[random.randint(0,len(word)-1)]
+    for letter in hiddenword:
+        if letter != randalpha:
+            hiddenword = hiddenword.replace(letter,"_")
+    print(hiddenword)
+    return hiddenword
+
+
+def inputguess():
+    guess = input("Enter a guess: ").lower()
+    return guess
+
+def change_hiddenword(guess,word,hiddenword):
+    new_hiddenword = ""
+    i = 0
+    for letter in hiddenword:
+        if letter == "_":
+            if word[i] == guess:
+                new_hiddenword += guess
+            else:
+                new_hiddenword += letter
         else:
-            guessword=guessword+Disp
+            new_hiddenword += letter
         i+=1
-    Disp=guessword
-    print(guessword)
-    guesslist=''
-    while guessword!=Answer.lower() and Deathcount<7:
-        IncorInp=False
-        totalcount=0
-        guess=input('Enter a guess: ')
-        guessword=''
-        if guess in Answer.lower() and guess not in guesslist:
-            while totalcount<wordlength:
-                if Answer[totalcount].lower()==guess:
-                    guessword=guessword+guess
-                else:
-                    guessword=guessword+Disp[totalcount]
-                totalcount+=1
-            Disp=guessword
-            guesslist=guesslist+guess
-        elif guess in guesslist or len(guess)>1:
-            IncorInp=True
-        elif not guess.isalpha():
-            IncorInp=True
-        else:
-            Deathcount+=1
-            guesslist=guesslist+guess
-        if IncorInp:
-            print('Incorrect Input')
-        else:
-            displayHangMan(Deathcount)
-            print(Disp)
-            print(guesslist)
-    if guessword==Answer.lower():
-        print('Congratulations!')
-        print('You saved the hangman!')
-    else:
-        print('Hangman died T.T')
-        print('The answer is', Answer.lower())
-    
-    
-filename='c:/work/fruits.txt'
-inputfile=open(filename)
-text=inputfile.read()
-lst=text.split('\n')
-inputfile.close()
+    return new_hiddenword
+        
 
-gamestart(lst)
+def runGame():
+    lst = makelist()
+    word = randomword(lst)
+    deathcount = 0
+    displayHangMan(deathcount)
+    hiddenword = guessword(word)
+    guesshistory = ""
+    print(guesshistory)
+    while deathcount < 7 and hiddenword != word:
+        guess = inputguess()
+        if not guess.isalpha():
+            print("Incorrect input")
+        elif guess in guesshistory:
+            print("Incorrect input")
+        elif guess not in word:
+            guesshistory += guess
+            deathcount += 1
+            displayHangMan(deathcount)
+            print(hiddenword)
+            print(guesshistory)
+        elif guess in word :
+            guesshistory += guess
+            displayHangMan(deathcount)
+            new_hiddenword = change_hiddenword(guess,word,hiddenword)
+            hiddenword = new_hiddenword
+            print(hiddenword)
+            print(guesshistory)
+    if hiddenword == word:
+        print("Congratulation\nYou saved the hangman!")
+    if deathcount == 7:
+        print("Hangman died...T_T\nThe answer is",word)
 
+runGame()
